@@ -340,8 +340,21 @@ var GF = function(){
 		// test1 
 		// Tu codigo aquí (solo tu código y la instrucción requestAnimationFrame(mainLoop);)
 		// A partir del test2 deberás borrar lo implementado en el test1
-		
-    		// >=test2
+		/*var radio = 5;
+		var colorb ="green";
+		var colorf = "green";
+		var x = Math.random()*canvas.width;
+		var y = Math.random()*canvas.height;
+		var anguloInicio = (Math.PI/180)*0;
+  		var anguloFin = (Math.PI/180)*360;
+		contexto = canvas.getContext("2d");
+		contexto.beginPath();
+		contexto.arc(x,y,radio,anguloInicio,anguloFin,false);
+		contexto.fillStyle = colorf;
+		contexto.fill();
+		contexto.strokeStyle = colorb;
+		contexto.stroke();*/
+    	// >=test2
 		// main function, called each frame 
 		measureFPS(time);
      
