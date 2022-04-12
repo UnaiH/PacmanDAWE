@@ -235,6 +235,17 @@ var GF = function(){
 		// test2   
 		// Tu código aquí
 		// ojo: en el test2 esta función se llama drawPacman(x,y))
+		var colorb ="yellow";
+		var colorf = "black";
+		var anguloInicio = 0.25;
+  		var anguloFin = 0.75;
+		contexto = canvas.getContext("2d");
+		contexto.beginPath();
+		contexto.arc(x+15,y+15,15,anguloInicio,anguloFin,false);
+		contexto.fillStyle = colorf;
+		contexto.fill();
+		contexto.strokeStyle = colorb;
+		contexto.stroke();
     	};
     	
     	// >=test5
