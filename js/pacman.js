@@ -4,7 +4,7 @@ var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 var w = canvas.width;
 var h = canvas.height;
-
+var sentido = "izq"
 // >=test1
 // GAME FRAMEWORK 
 var GF = function(){
@@ -199,18 +199,44 @@ var GF = function(){
 	};
 	
 	// >=test3
+	var sentido = "izq"
 	Pacman.prototype.move = function() {
 	
 		// test3 / test4 / test7
 		// Tu código aquí
-		
-		
+		if (sentido=='izq'){
+			this.x=this.x-1
+		}
+		else{
+			this.x=this.x+1
+		}
+		var chocadrch
+		var chocaizq
+		if(x==w){
+			chocadrch=true
+		}
+		else{
+			choca=false
+		}
+		if(x==0){
+			chocaizq=true
+		}
+		else{
+			chocaizq=false
+		}
+		if(chocaizq){
+			this.x=this.x-1
+			sentido='drcha'
+		}
+		if(chocadrch){
+			this.x=this.x+1
+			sentido='izq'
+		}
 		// >=test8: introduce esta instrucción 
 		// dentro del código implementado en el test7:
 		// tras actualizar this.x  y  this.y... 
 		// check for collisions with other tiles (pellets, etc)
-		 thisLevel.checkIfHitSomething(this.x, this.y, this.nearestRow, this.nearestCol);
-		
+		thisLevel.checkIfHitSomething(this.x, this.y, this.nearestRow, this.nearestCol);
 		// test11
 		// Tu código aquí
 		// check for collisions with the ghosts
