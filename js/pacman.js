@@ -480,7 +480,7 @@ var GF = function(){
 				
 			}
 			if (keyName=="Space"){
-				
+				console.log("Se ha pulsado espacio.");
 			}
 		});
 	};
