@@ -204,7 +204,7 @@ var GF = function(){
 	
 		// test3 / test4 / test7
 		// Tu código aquí
-		if (sentido=='izq'){
+		/*if (sentido=='izq'){
 			this.x=this.x-1
 		}
 		else{
@@ -231,7 +231,21 @@ var GF = function(){
 		if(chocadrch){
 			this.x=this.x+1
 			sentido='izq'
+		}*/
+		//test4hecho
+		if(left){
+			this.x=this.x-1
 		}
+		else if(right){
+			this.x=this.x+1
+		}
+		else if(up){
+			this.y=this.y+1
+		}
+		else{
+			this.y=this.y-1
+		}
+
 		// >=test8: introduce esta instrucción 
 		// dentro del código implementado en el test7:
 		// tras actualizar this.x  y  this.y... 
@@ -448,10 +462,27 @@ var GF = function(){
 	
 	// >=test4
 	var addListeners = function(){
-    
 		// add the listener to the main, window object, and update the states
 		// test4
 		// Tu código aquí
+		canvas.addEventListener('keydown', (event)=>{
+			const keyName = event.key;
+			if (keyName == "ArrowUp"){
+				
+			}
+			if (keyName=="ArrowDown"){
+				
+			}
+			if (keyName=="ArrowRight"){
+				
+			}
+			if (keyName=="ArrowLeft"){
+				
+			}
+			if (keyName=="Space"){
+				
+			}
+		});
 	};
 	
 	
