@@ -1,0 +1,55 @@
+this.setMapTile = function(row, col, newValue){
+  	// test5
+	// tu código aquí
+      
+	this.map[row*this.lvlWidth+col] = newValue;
+      
+};
+
+this.getMapTile = function(row, col){
+  	// test5
+	// tu código aquí	
+      
+	return this.map[row*this.lvlWidth+col];
+      
+};
+
+this.printMap = function(){
+  	// test5
+	// tu código aquí
+      
+	for (var row=0; row<this.lvlHeight; row++) {
+		for (var col=0; col<this.lvlWidth; col++) {
+        		var value = this.getMapTile(row, col);
+          		console.log("row: " + row + ", col: " + col + ", value: " + value);
+        	}
+      	}
+      
+};
+
+this.loadLevel = function(){
+  	// test5
+    	// Tu código aquí
+	// leer res/levels/1.txt y guardarlo en el atributo map	
+	// haciendo uso de setMapTile
+      
+     	var direccion = "https://raw.githubusercontent.com/AinhoY/froga/main/1.txt";
+      	var level = this;
+      	$.ajax({url:direccion,success:function(result){
+      
+        	var r2 = JSON.stringify(result);
+        	var r3 = r2.replaceAll('"', "").replaceAll("#", "").replaceAll("\\n", " ").replaceAll("  ", " ").replaceAll("  ", " ").trim();
+        	var r4 = r3.split(" ");
+
+        	level.lvlWidth = r4[1];
+        	level.lvlHeight = r4[3];
+        	for (var row=0; row<level.lvlHeight; row++) {
+          		for (var col=0; col<level.lvlWidth; col++) {
+            			var value = r4[row*level.lvlWidth+col+5];
+            			level.setMapTile(row, col, value);
+          		}
+        	}
+      
+	}});
+      
+};

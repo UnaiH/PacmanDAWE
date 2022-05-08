@@ -1,0 +1,7 @@
+ctx.beginPath();
+ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+ctx.closePath();
+ctx.strokeStyle = "green";
+ctx.stroke();
+ctx.fillStyle = "green";
+ctx.fill();
