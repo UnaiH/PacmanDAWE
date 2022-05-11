@@ -1,7 +1,0 @@
-ctx.beginPath();
-ctx.arc(x+pacman.radius, y+pacman.radius, pacman.radius, pacman.angle1*Math.PI, pacman.angle2*Math.PI);
-ctx.closePath();
-ctx.strokeStyle = "black";
-ctx.stroke();
-ctx.fillStyle = "yellow";
-ctx.fill();
