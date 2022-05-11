@@ -1,0 +1,46 @@
+// variable para saber la dirección en la que se mueve el pacman
+var dir = "der";
+  
+Pacman.prototype.move = function() {
+	// test3
+	// Tu código aquí
+    
+	if (dir=="der") {
+    		if (this.posX+this.speed<=w-this.radius*2) {
+    			this.posX = this.posX+this.speed;
+		}
+		else {
+        		dir = "izq";
+			this.posX = this.posX-this.speed;
+		}
+	}
+	else if (dir=="izq") {
+    		if (this.posX-this.speed>=0) {
+        		this.posX = this.posX-this.speed;
+        	}
+        	else {
+        		dir = "der";
+        		this.posX = this.posX+this.speed;
+        	}
+    	}
+    
+};
+
+// Función para pintar el Pacman
+Pacman.prototype.draw = function(x, y) {     
+	// Pac Man
+	// test2   
+	// Tu código aquí
+	// ojo: en el test2 esta función se llama drawPacman(x,y)) 
+    
+	ctx.beginPath();
+	ctx.arc(this.posX+this.radius, this.posY+this.radius, this.radius, this.angle1*Math.PI, this.angle2*Math.PI);
+	ctx.lineTo(this.posX+this.radius, this.posY+this.radius);
+	ctx.closePath();
+	ctx.strokeStyle = "black";
+	ctx.stroke();
+	ctx.fillStyle = "yellow";
+	ctx.fill();
+    
+}
+
