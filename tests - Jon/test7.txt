@@ -45,25 +45,30 @@ this.checkIfHitWall = function(possiblePlayerX, possiblePlayerY, row, col) {
       	// Determinar si el jugador va a moverse a una fila,columna que tiene pared 
       	// Hacer uso de isWall
 
-	var possiblePlayerX2 = possiblePlayerX+player.radius*2,
-          	possiblePlayerY2 = possiblePlayerY+player.radius*2,
-          	row1 = Math.floor(possiblePlayerY/thisGame.TILE_HEIGHT),
-          	col1 = Math.floor(possiblePlayerX/thisGame.TILE_WIDTH),
-          	row2 = Math.floor(possiblePlayerY2/thisGame.TILE_HEIGHT),
-          	col2 = Math.floor(possiblePlayerX2/thisGame.TILE_WIDTH),
-          	rows = [row1, row2],
-          	cols = [col1, col2];
-          
-      	for (var i=0; i<rows.length; i++) {
+	var colLeft = Math.floor(possiblePlayerX/thisGame.TILE_WIDTH),
+          	colRight = Math.floor((possiblePlayerX+player.radius*2)/thisGame.TILE_WIDTH),
+          	rowUp = Math.floor(possiblePlayerY/thisGame.TILE_HEIGHT),
+          	rowDown = Math.floor((possiblePlayerY+player.radius*2)/thisGame.TILE_HEIGHT),
+          	cols = [colLeft],
+          	rows = [rowUp];
+
+      	if (colLeft!=colRight) {
+        	cols[1] = colRight;
+      	}
+      	if (rowUp!=rowDown) {
+        	rows[1] = rowDown;
+      	}
+
+      	for (var i = 0; i < rows.length; i++) {
         	var r = rows[i];
-        	for (var j=0; j<cols.length; j++) {
+        	for (var j = 0; j < cols.length; j++) {
           		var c = cols[j];
           		if (this.isWall(r, c)) {
             			return true;
           		}
         	}
       	}
-      
+
       	return false;
 
 };
