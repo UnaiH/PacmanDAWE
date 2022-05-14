@@ -1,0 +1,64 @@
+this.checkIfHitSomething = function(playerX, playerY, row, col) {
+      	var tileID = {
+        	'doorH': 20,
+        	'doorV': 21,
+        	'pelletPower': 3,
+        	'pacman': 4,
+        	'empty': 0,
+        	'pellet': 2,
+      	};
+      	// test8
+      	// Tu código aquí
+      	//  Gestiona la recogida de píldoras
+
+      	var playerX2 = playerX + thisGame.TILE_WIDTH - 1,
+        	playerY2 = playerY + thisGame.TILE_HEIGHT - 1,
+        	colLeft = Math.floor(playerX / thisGame.TILE_WIDTH),
+        	colRight = Math.floor(playerX2 / thisGame.TILE_WIDTH),
+        	rowUp = Math.floor(playerY / thisGame.TILE_HEIGHT),
+        	rowDown = Math.floor(playerY2 / thisGame.TILE_HEIGHT),
+        	cols = [colLeft],
+        	rows = [rowUp];
+
+      	if (colLeft != colRight) {
+        	cols[1] = colRight;
+      	}
+      	if (rowUp != rowDown) {
+        	rows[1] = rowDown;
+      	}
+
+      	for (var i = 0; i < rows.length; i++) {
+        	var r = rows[i];
+        	for (var j = 0; j < cols.length; j++) {
+          		var c = cols[j];
+          		var value = this.getMapTile(r, c);
+          		if (value == tileID.pellet) {
+            			this.setMapTile(r, c, 0);
+            			this.pellets--;
+            			if (this.pellets == 0) {
+              				console.log("Next level!");
+            			}
+          		}
+			else if (value == tileID.doorH) {
+				if (c == 0) {
+              				player.x = (this.lvlWidth - 2) * 					thisGame.TILE_WIDTH;
+            			}
+            			else if (c == this.lvlWidth - 1) {
+              				player.x = thisGame.TILE_WIDTH;
+            			}
+          		}
+			else if (value == tileID.doorV) {
+				if (r == 0) {
+              				player.y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
+            			}
+            			else if (r == this.lvlHeight - 1) {
+              				player.y = thisGame.TILE_HEIGHT;
+            			}
+          		}
+        	}
+      	}
+
+      	// test9
+      	// Tu código aquí
+      	// Gestiona las puertas teletransportadoras
+};

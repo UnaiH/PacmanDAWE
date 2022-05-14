@@ -1,0 +1,193 @@
+this.state = {
+      	normal: true,
+      	vulnerable: false,
+      	dead: false
+}
+
+this.draw = function() {
+      	// test10
+      	// Tu código aquí
+      	// Pintar cuerpo de fantasma
+      	// Pintar ojos 
+      
+      	this.ctx.beginPath();
+      	this.ctx.moveTo(this.x+TILE_WIDTH/8, this.y+TILE_HEIGHT/8*3);
+      	this.ctx.quadraticCurveTo(this.x+TILE_WIDTH/8*2, this.y, this.x+TILE_WIDTH/8*3, this.y+TILE_HEIGHT/8*3);
+      	this.ctx.quadraticCurveTo(this.x+TILE_WIDTH/8*4, this.y, this.x+TILE_WIDTH/8*5, this.y+TILE_HEIGHT/8*3);
+      	this.ctx.lineTo(this.x+player.radius*2, this.y+player.radius*2);
+      	this.ctx.lineTo(this.x, this.y+player.radius*2);
+      	this.ctx.closePath();
+      	this.ctx.strokeStyle = ghostcolor[this.id];
+      	this.ctx.stroke();
+      	this.ctx.fillStyle = ghostcolor[this.id];
+      	this.ctx.fill();
+
+      	this.ctx.beginPath();
+      	this.ctx.arc(this.x+TILE_WIDTH/8, this.y+player.radius, TILE_WIDTH/8, 0, 2*Math.PI);
+      	this.ctx.arc(this.x+TILE_WIDTH/8*3, this.y+player.radius, TILE_WIDTH/8, 0, 2*Math.PI);
+      	this.ctx.closePath();
+      	this.ctx.strokeStyle = "white";
+      	this.ctx.stroke();
+      	this.ctx.fillStyle = "white";
+      	this.ctx.fill();
+
+}; // draw
+
+this.move = function() {
+      	// test10
+      	// Tu código aquí
+
+      	var x2 = this.x + thisGame.TILE_WIDTH - 1,
+        	y2 = this.y + thisGame.TILE_HEIGHT - 1,
+        	colLeft = Math.floor(this.x / thisGame.TILE_WIDTH),
+        	colRight = Math.floor(x2 / thisGame.TILE_WIDTH),
+        	rowUp = Math.floor(this.y / thisGame.TILE_HEIGHT),
+        	rowDown = Math.floor(y2 / thisGame.TILE_HEIGHT);
+
+      	if (colLeft == colRight && rowUp == rowDown) {
+        	var movs = [
+            			[-1, 0],
+            			[1, 0],
+            			[0, -1],
+            			[0, 1]
+          		],
+          		sols = [];
+        	for (var i = 0; i < movs.length; i++) {
+          		var mov = movs[i];
+          		var possibleX = this.x + this.speed * mov[0];
+          		var possibleY = this.y + this.speed * mov[1];
+          		if (possibleX >= 0 && possibleX <= TILE_WIDTH * (thisLevel.lvlWidth - 1) && possibleY >= 0 && possibleY <= TILE_HEIGHT * (thisLevel.lvlHeight - 1) && !thisLevel.checkIfHitWall(possibleX, possibleY, this.nearestRow, this.nearestCol)) {
+            			sols.push(mov);
+          		}
+        	}
+        	var fork = false,
+          		cont = 0;
+        	while (!fork && cont < sols.length) {
+          		var mov = sols[cont];
+          		var ind = movs.indexOf(mov);
+          		var inds;
+          		if (ind == 0 || ind == 1) {
+            			inds = [2, 3];
+          		} else if (ind == 2 || ind == 3) {
+            			inds = [0, 1];
+          		}
+          		if (sols.includes(movs[inds[0]]) || sols.includes(movs[inds[1]])) {
+            			fork = true;
+          		}
+          		cont++;
+        	}
+        	var possibleX = this.x + this.velX;
+        	var possibleY = this.y + this.velY;
+        	if (possibleX < 0 || possibleX > TILE_WIDTH * (thisLevel.lvlWidth - 1) || possibleY < 0 || possibleY > TILE_HEIGHT * (thisLevel.lvlHeight - 1) || thisLevel.checkIfHitWall(possibleX, possibleY, this.nearestRow, this.nearestCol) || fork) {
+          		var rand = Math.floor(Math.random() * sols.length);
+          		var mov = sols[rand];
+
+          		this.velX = this.speed * mov[0];
+          		this.velY = this.speed * mov[1];
+        	}
+      	}
+
+      	this.x = this.x + this.velX;
+      	this.y = this.y + this.velY;
+
+};
+
+this.loadLevel = function() {
+      	// test5
+      	// Tu código aquí
+      	// leer res/levels/1.txt y guardarlo en el atributo map	
+      	// haciendo uso de setMapTile
+
+      	var direccion = "https://raw.githubusercontent.com/AinhoY/froga/main/1.txt";
+      	var level = this;
+      	$.ajax({url: direccion, success: function(result) {
+
+          	var r2 = JSON.stringify(result);
+          	var r3 = r2.split("\\n");
+
+          	level.lvlWidth = r3[0].split(" ")[2];
+          	level.lvlHeight = r3[1].split(" ")[2];
+          	for (var row = 0; row < level.lvlHeight; row++) {
+            		var row2 = r3[row + 4].trim().split(" ");
+            		for (var col = 0; col < level.lvlWidth; col++) {
+              			var value = row2[col];
+              			if (value == 4) {
+                			player.homeX = col*thisGame.TILE_WIDTH;
+              				player.homeY = row*thisGame.TILE_HEIGHT;
+              			}
+				else if (value == 2) {
+                			level.pellets++;
+              			}
+            			else if (value>=10 && value<=13) {
+					var ghost = ghosts[value-10];
+            				ghost.homeX = col*thisGame.TILE_WIDTH;
+              				ghost.homeY = row*thisGame.TILE_HEIGHT;
+            			}
+              			level.setMapTile(row, col, value);
+            		}
+          	}
+        
+        	reset();
+
+        }});
+
+      	// test10
+      	// Tu código aquí
+};
+
+var mainLoop = function(time) {
+    	//main function, called each frame 
+    	measureFPS(time);
+
+    	checkInputs();
+
+    	// test10
+    	// Tu código aquí
+    	// Mover fantasmas
+    
+    	for (var i=0; i< numGhosts; i++){
+      		ghosts[i].move();
+    	}
+
+    	player.move();
+    	// Clear the canvas
+    	clearCanvas();
+
+    	thisLevel.drawMap();
+
+    	// Tu código aquí
+    	// Pintar fantasmas
+    
+    	for (var i=0; i< numGhosts; i++){
+      		ghosts[i].draw();
+    	}
+
+    	player.draw();
+    	// call the animation loop every 1/60th of second
+    	requestAnimationFrame(mainLoop);
+};
+
+var reset = function() {
+    	// test7
+    	// Tu código aquí
+    	// Inicialmente Pacman debe empezar a moverse en horizontal hacia la derecha, con una velocidad igual a su atributo speed
+    	// inicializa la posición inicial de Pacman tal y como indica el enunciado
+    
+    	player.x = player.homeX;
+    	player.y = player.homeY; 
+    	player.velX = player.speed;
+    	player.velY = 0;
+
+    	// test10
+    	// Tu código aquí
+    	// Inicializa los atributos x,y, velX, velY, speed de la clase Ghost de forma conveniente
+    
+    	for (var i=0; i< numGhosts; i++){
+    		var ghost = ghosts[i];
+      		ghost.x = ghost.homeX;
+      		ghost.y = ghost.homeY;
+      		ghost.velX = ghost.speed;
+      		ghost.velY = 0;
+    	}
+    
+};
