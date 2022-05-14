@@ -1,0 +1,46 @@
+this.checkIfHit = function(playerX, playerY, x, y, holgura){
+	// test11
+	// Tu código aquí	
+      
+      	return Math.abs(playerX-x)<holgura && Math.abs(playerY-y)<holgura;
+
+};
+
+Pacman.prototype.move = function() {
+	// test7
+	// Tu código aquí
+	//
+    
+    	if (this.velX != 0) {
+      		if (this.x + this.velX >= 0 && this.x + this.velX <= thisGame.TILE_WIDTH * (thisLevel.lvlWidth - 1) && !thisLevel.checkIfHitWall(this.x + this.velX, this.y, this.nearestRow, this.nearestCol)) {
+        		this.x = this.x + this.velX;
+      		}
+      		else {
+        		this.velX = 0;
+      		}
+    	}
+    	else if (this.velY != 0) {
+      		if (this.y + this.velY >= 0 && this.y + this.velY <= thisGame.TILE_HEIGHT * (thisLevel.lvlHeight - 1) && !thisLevel.checkIfHitWall(this.x, this.y + this.velY, this.nearestRow, this.nearestCol)) {
+        		this.y = this.y + this.velY;
+      		}
+      		else {
+        		this.velY = 0;
+      		}
+    	}
+    
+	// tras actualizar this.x  y  this.y... 
+    	// check for collisions with other tiles (pellets, etc)
+	thisLevel.checkIfHitSomething(this.x, this.y, this.nearestRow, this.nearestCol);
+		
+	// test11
+	// Tu código aquí
+	// check for collisions with the ghosts
+    
+    	for (var i=0; i< numGhosts; i++){
+      		var ghost = ghosts[i];
+      		if(thisLevel.checkIfHit(this.x, this.y, ghost.x, ghost.y, TILE_WIDTH/2)) {
+      			console.log("Hay choque");
+      		}
+    	}
+
+};
