@@ -1,0 +1,196 @@
+this.draw = function() {
+      	// test10
+      	// Tu código aquí
+      	// Pintar cuerpo de fantasma
+      	// Pintar ojos
+
+	if (this.state != Ghost.SPECTACLES) {
+      		var color;
+      		if (this.state == Ghost.NORMAL) {
+        		color = ghostcolor[this.id];
+      		}
+		else if (this.state == Ghost.VULNERABLE) {
+        		if (thisGame.ghostTimer >= 100) {
+          			color = ghostcolor[4];
+        		}
+			else {
+          			var timer = Math.floor(thisGame.ghostTimer / 10);
+          			if (timer % 2 != 0) {
+            				color = ghostcolor[5];
+          			}
+				else {
+            				color = ghostcolor[4];
+          			}
+       	 		}
+      		}
+
+      		this.ctx.beginPath();
+      		this.ctx.moveTo(this.x + TILE_WIDTH / 8, this.y + TILE_HEIGHT / 8 * 3);
+      		this.ctx.quadraticCurveTo(this.x + TILE_WIDTH / 8 * 2, this.y, this.x + TILE_WIDTH / 8 * 3, this.y + TILE_HEIGHT / 8 * 3);
+      		this.ctx.quadraticCurveTo(this.x + TILE_WIDTH / 8 * 4, this.y, this.x + TILE_WIDTH / 8 * 5, this.y + TILE_HEIGHT / 8 * 3);
+      		this.ctx.lineTo(this.x + player.radius * 2, this.y + player.radius * 2);
+      		this.ctx.lineTo(this.x, this.y + player.radius * 2);
+      		this.ctx.closePath();
+      		this.ctx.strokeStyle = color;
+      		this.ctx.stroke();
+      		this.ctx.fillStyle = color;
+      		this.ctx.fill();
+	}
+
+      	this.ctx.beginPath();
+      	this.ctx.arc(this.x + TILE_WIDTH / 8, this.y + player.radius, TILE_WIDTH / 8, 0, 2 * Math.PI);
+      	this.ctx.arc(this.x + TILE_WIDTH / 8 * 3, this.y + player.radius, TILE_WIDTH / 8, 0, 2 * Math.PI);
+      	this.ctx.closePath();
+      	this.ctx.strokeStyle = "white";
+      	this.ctx.stroke();
+      	this.ctx.fillStyle = "white";
+      	this.ctx.fill();
+
+      	// test12 
+      	// Tu código aquí
+      	// Asegúrate de pintar el fantasma de un color u otro dependiendo del estado del fantasma y de thisGame.ghostTimer
+      	// siguiendo el enunciado
+
+      	// test13 
+      	// Tu código aquí
+      	// El cuerpo del fantasma sólo debe dibujarse cuando el estado del mismo es distinto a Ghost.SPECTACLES
+
+}; // draw
+
+this.move = function() {
+      	// test10
+      	// Tu código aquí
+
+	if (this.state != Ghost.SPECTACLES) {
+      		var x2 = this.x + thisGame.TILE_WIDTH - 1,
+        		y2 = this.y + thisGame.TILE_HEIGHT - 1,
+        		colLeft = Math.floor(this.x / thisGame.TILE_WIDTH),
+        		colRight = Math.floor(x2 / thisGame.TILE_WIDTH),
+        		rowUp = Math.floor(this.y / thisGame.TILE_HEIGHT),
+        		rowDown = Math.floor(y2 / thisGame.TILE_HEIGHT);
+
+      		if (colLeft == colRight && rowUp == rowDown) {
+        		var movs = [
+            				[-1, 0],
+            				[1, 0],
+            				[0, -1],
+            				[0, 1]
+          			],
+          			sols = [];
+        		for (var i = 0; i < movs.length; i++) {
+          			var mov = movs[i];
+          			var possibleX = this.x + this.speed * mov[0];
+          			var possibleY = this.y + this.speed * mov[1];
+          			if (possibleX >= 0 && possibleX <= TILE_WIDTH * (thisLevel.lvlWidth - 1) && possibleY >= 0 && possibleY <= TILE_HEIGHT * (thisLevel.lvlHeight - 1) && !thisLevel.checkIfHitWall(possibleX, possibleY, this.nearestRow, this.nearestCol)) {
+            				sols.push(mov);
+          			}
+        		}
+        		var fork = false,
+          			cont = 0;
+        		while (!fork && cont < sols.length) {
+          			var mov = sols[cont];
+          			var ind = movs.indexOf(mov);
+          			var inds;
+          			if (ind == 0 || ind == 1) {
+            				inds = [2, 3];
+          			} else if (ind == 2 || ind == 3) {
+            				inds = [0, 1];
+          			}
+          			if (sols.includes(movs[inds[0]]) || sols.includes(movs[inds[1]])) {
+            				fork = true;
+          			}
+          			cont++;
+        		}
+        		var possibleX = this.x + this.velX;
+        		var possibleY = this.y + this.velY;
+        		if (possibleX < 0 || possibleX > TILE_WIDTH * (thisLevel.lvlWidth - 1) || possibleY < 0 || possibleY > TILE_HEIGHT * (thisLevel.lvlHeight - 1) || thisLevel.checkIfHitWall(possibleX, possibleY, this.nearestRow, this.nearestCol) || fork) {
+          			var rand = Math.floor(Math.random() * sols.length);
+          			var mov = sols[rand];
+
+          			this.velX = this.speed * mov[0];
+          			this.velY = this.speed * mov[1];
+        		}
+      		}
+	}
+	else {
+        	var diffX = this.homeX - this.x,
+          		diffY = this.homeY - this.y;
+        	if (diffX == 0) {
+          		this.velX = 0;
+        	}
+		else if (diffX > 0) {
+          		this.velX = this.speed;
+        	}
+		else {
+          		this.velX = -this.speed;
+        	}
+        	if (diffY == 0) {
+          		this.velY = 0;
+        	}
+		else if (diffY > 0) {
+          		this.velY = this.speed;
+        	}
+		else {
+          		this.velY = -this.speed;
+        	}
+      	}
+
+      	this.x = this.x + this.velX;
+      	this.y = this.y + this.velY;
+
+      	if (this.state == Ghost.SPECTACLES && this.x == this.homeX && this.y == this.homeY) {
+        	this.state = Ghost.NORMAL;
+      	}
+
+      	// test13 
+      	// Tu código aquí
+      	// Si el estado del fantasma es Ghost.SPECTACLES
+      	// Mover el fantasma lo más recto posible hacia la casilla de salida
+};
+
+Pacman.prototype.move = function() {
+	// test7
+	// Tu código aquí
+	//
+    
+    	if (this.velX != 0) {
+      		if (this.x + this.velX >= 0 && this.x + this.velX <= thisGame.TILE_WIDTH * (thisLevel.lvlWidth - 1) && !thisLevel.checkIfHitWall(this.x + this.velX, this.y, this.nearestRow, this.nearestCol)) {
+        		this.x = this.x + this.velX;
+      		}
+      		else {
+        		this.velX = 0;
+      		}
+    	}
+    	else if (this.velY != 0) {
+      		if (this.y + this.velY >= 0 && this.y + this.velY <= thisGame.TILE_HEIGHT * (thisLevel.lvlHeight - 1) && !thisLevel.checkIfHitWall(this.x, this.y + this.velY, this.nearestRow, this.nearestCol)) {
+        		this.y = this.y + this.velY;
+      		}
+      		else {
+        		this.velY = 0;
+      		}
+    	}
+    
+	// tras actualizar this.x  y  this.y... 
+    	// check for collisions with other tiles (pellets, etc)
+	thisLevel.checkIfHitSomething(this.x, this.y, this.nearestRow, this.nearestCol);
+		
+	// test11
+	// Tu código aquí
+	// check for collisions with the ghosts
+    
+    	for (var i=0; i< numGhosts; i++){
+      		var ghost = ghosts[i];
+      		if(thisLevel.checkIfHit(this.x, this.y, ghost.x, ghost.y, TILE_WIDTH/2)) {
+      			console.log("Hay choque");
+        		if (ghost.state == Ghost.VULNERABLE) {
+          			ghost.state = Ghost.SPECTACLES;
+        		}
+      		}
+    	}
+
+    	// test13
+    	// Tu código aquí.  
+    	// Si chocamos contra un fantasma y su estado es Ghost.VULNERABLE
+    	// cambiar velocidad del fantasma y pasarlo a modo Ghost.SPECTACLES
+
+};
