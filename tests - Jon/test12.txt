@@ -113,7 +113,10 @@ this.checkIfHitSomething = function(playerX, playerY, row, col) {
           		} else if (value == tileID.pelletPower) {
             			this.setMapTile(r, c, 0);
             			for (var i = 0; i < numGhosts; i++) {
-              				ghosts[i].state = Ghost.VULNERABLE;
+              				var ghost = ghosts[i];
+              				if (ghost.state == Ghost.NORMAL) {
+                				ghost.state = Ghost.VULNERABLE;
+              				}
             			}
             			thisGame.ghostTimer = 360;
           		}
@@ -140,7 +143,10 @@ var updateTimers = function() {
       		thisGame.ghostTimer--;
       		if (thisGame.ghostTimer == 0) {
         		for (var i = 0; i < numGhosts; i++) {
-          			ghosts[i].state = Ghost.NORMAL;
+          			var ghost = ghosts[i];
+          			if (ghost.state == Ghost.VULNERABLE) {
+            				ghost.state = Ghost.NORMAL;
+          			}
         		}
       		}
     	}
