@@ -184,6 +184,7 @@ var reset = function() {
       		ghost.y = ghost.homeY;
       		ghost.velX = ghost.speed;
       		ghost.velY = 0;
+      		ghost.speed = 1;
     	}
     
 };
